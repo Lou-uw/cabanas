@@ -30,9 +30,7 @@ export function Hero() {
         </h1>
 
         <p className="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
-          Un refugio para los amantes de la buena pizza. Masa artesanal, ingredientes
-          frescos y ese sabor de la cabaña que te hace volver.
-        </p>
+          Un refugio para los amantes de la buena pizza.</p>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <Button
@@ -43,7 +41,7 @@ export function Hero() {
           />
           <Button
             nativeButton={false}
-            render={<a href="#combo">Combo del día</a>}
+            render={<a href="#combo">Promos</a>}
             size="lg"
             variant="outline"
             className="rounded-full border-border bg-background/40 px-8 text-base font-semibold backdrop-blur"
