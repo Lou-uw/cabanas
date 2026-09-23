@@ -22,7 +22,6 @@ export default function Page() {
             <Hero />
             <MostOrdered />
             <BordesSection />
-            <FullMenu />
             <ComboSection />
           </main>
           <AboutFooter />
