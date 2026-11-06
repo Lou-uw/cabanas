@@ -1,10 +1,13 @@
-const URL ="127.0.0.1:8080/api/productos"
+import { Producto } from "@/types/producto"
+import { url_api } from "@/config"
 
-export async function obtenerProducto() {
-    const respuesta = await fetch(URL)
+export async function obtenerProducto(): Promise<Producto[]> {
+    const respuesta = await fetch(url_api+"productos")
 
     if(!respuesta.ok) {
         throw new Error("error")
     }
-    return respuesta.json()
+    const response = respuesta.json()
+    console.table(response)
+    return response as Promise<Producto[]>
 }

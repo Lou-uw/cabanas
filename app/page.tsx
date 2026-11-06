@@ -15,12 +15,7 @@ import { CartSheet } from '@/components/cart-sheet'
 import {useProducto} from "../hooks/useProducto"
 
 export default function Page() {
-  const {productos} = useProducto()
-
-
-  useEffect(()=> {
-    console.log(productos)
-  },[])
+ 
   return (
     <CartProvider>
       <ProductUIProvider>
