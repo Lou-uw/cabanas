@@ -1,5 +1,6 @@
 'use client'
 
+import {useEffect} from "react"
 import { CartProvider } from '@/lib/cart-context'
 import { ProductUIProvider } from '@/lib/product-ui-context'
 import { Header } from '@/components/header'
@@ -11,8 +12,15 @@ import { ComboSection } from '@/components/combo-section'
 import { AboutFooter } from '@/components/about-footer'
 import { ProductModal } from '@/components/product-modal'
 import { CartSheet } from '@/components/cart-sheet'
+import {useProducto} from "../hooks/useProducto"
 
 export default function Page() {
+  const {productos} = useProducto()
+
+
+  useEffect(()=> {
+    console.log(productos)
+  },[])
   return (
     <CartProvider>
       <ProductUIProvider>
