@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { formatGs, type Product } from '@/lib/menu'
 import { useProductUI } from '@/lib/product-ui-context'
+import { Producto } from '@/types/producto'
 
-function startingPrice(product: Product): { label: string; value: number } {
+function startingPrice(product: Producto): { label: string; value: number } {
   if (product.sizes && product.sizes.length > 0) {
     const min = Math.min(...product.sizes.map((s) => s.price))
     return { label: 'Desde', value: min }
@@ -15,7 +16,7 @@ function startingPrice(product: Product): { label: string; value: number } {
   return { label: '', value: product.price ?? 0 }
 }
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product }: { product: Producto }) {
   const { openProduct } = useProductUI()
   const price = startingPrice(product)
 
