@@ -2,6 +2,9 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Playfair_Display, Inter } from 'next/font/google'
 import './globals.css'
+import { CartProvider } from '@/lib/cart-context'
+import { ProductUIProvider } from '@/lib/product-ui-context'
+import { Header } from '@/components/header'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -36,7 +39,12 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${playfair.variable} ${inter.variable}`}>
       <body className="font-sans antialiased">
-        {children}
+        <CartProvider>
+          <ProductUIProvider>
+            <Header />
+            {children}
+          </ProductUIProvider>
+        </CartProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

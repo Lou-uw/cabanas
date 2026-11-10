@@ -1,16 +1,23 @@
 'use client'
 
-import { useProducto } from '@/hooks/useProducto'
+import { useCallback, useState } from 'react'
 import { ProductCard } from './product-card'
+import { Button } from '@/components/ui/button'
+import { RefreshCw } from 'lucide-react'
+import { useProducto } from '@/hooks/useProducto'
 
 export function MostOrdered() {
-  const { prods, loading, error } = useProducto()
+  const { prods, loading, error, refetch } = useProducto()
 
   const featured = prods.filter((p) => p.featured).slice(0, 4)
   const destacados =
     featured.length > 0
       ? featured
       : prods.filter((p) => p.sizes).slice(0, 4)
+
+  const handleRetry = useCallback(() => {
+    refetch()
+  }, [refetch])
 
   return (
     <section
@@ -33,10 +40,20 @@ export function MostOrdered() {
         <p className="text-muted-foreground">Cargando destacados...</p>
       )}
 
-      {error && (
-        <p className="text-destructive">
-          No se pudieron cargar los destacados: {error}
-        </p>
+      {error && !loading && (
+        <div className="flex flex-col items-center justify-center gap-3 p-8 text-center rounded-lg border border-destructive/50 bg-destructive/10">
+          <p className="text-destructive">
+            No se pudieron cargar los destacados. Verificá que el servidor esté
+            encendido.
+          </p>
+          <Button
+            onClick={handleRetry}
+            variant="outline"
+          >
+            <RefreshCw className="size-4 mr-2" />
+            Reintentar
+          </Button>
+        </div>
       )}
 
       {!loading && !error && (

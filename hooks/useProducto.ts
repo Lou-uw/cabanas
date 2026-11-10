@@ -123,6 +123,7 @@ function armarProducto(producto: Producto, tamanios: Tamanio[]): Product {
         sizes: pizza ? preciosPorTamanio(producto, tamanios) : undefined,
         price: pizza ? undefined : (producto.precio ?? 0),
         allowBorde: pizza,
+    activo: producto.activo,
     }
 }
 
@@ -130,27 +131,28 @@ export function useProducto() {
     const [prods, setProds] = useState<Product[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
-    useEffect (() => {
-        async function traerProds() {
-            try {
-                const [productos, tamanios] = await Promise.all([
-                    obtenerProducto(),
-                    obtenerTamanio(),
-                ])
+    
+    const traerProds = async () => {
+        try {
+            const [productos, tamanios] = await Promise.all([
+                obtenerProducto(),
+                obtenerTamanio(),
+            ])
 
-                setProds(
-                    productos
-                        .filter((producto) => producto.activo)
-                        .map((producto) => armarProducto(producto, tamanios)),
-                )
-            } catch(error) {
-                console.log(error)
-                setError(error as string)
-            } finally {
-                setLoading(false)
-            }
+            setProds(
+                productos.map((producto) => armarProducto(producto, tamanios)),
+            )
+            setError(null)
+        } catch(error) {
+            console.log(error)
+            setError(error instanceof Error ? error.message : String(error))
+        } finally {
+            setLoading(false)
         }
+    }
+    
+    useEffect(() => {
         traerProds()
     },[])
-    return{ prods, loading, error }
+    return{ prods, loading, error, refetch: traerProds }
 }

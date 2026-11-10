@@ -4,12 +4,14 @@ export type PedidoDetalleRequest = {
   comboId?: number | null
   tamanioId?: number
   conBorde?: boolean
+  /** Si es true, el ítem es un regalo de promoción (precio 0) */
+  esRegalo?: boolean
   cantidad: number
 }
 
 export type PedidoRequest = {
   clienteNombre: string
-  clienteTelefono: string
+  clienteTelefono?: string | null
   formaPago: string
   direccionEntrega: string
   notas?: string | null
@@ -24,6 +26,8 @@ export type PedidoDetalleResponse = {
   combo: string | null
   tamanioId: number | null
   conBorde: boolean
+  /** Si es true, el ítem es un regalo de promoción (precio 0) */
+  esRegalo: boolean
   cantidad: number
   precioUnitario: number | string
   precioBorde: number | string

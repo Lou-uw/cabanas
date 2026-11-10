@@ -26,7 +26,7 @@ export function AboutFooter() {
               <h3 className="font-serif text-lg font-semibold">Encontranos</h3>
               <p className="flex items-start gap-2 text-sm text-muted-foreground">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
-                Av. Monseñor Rodríguez, Ciudad del Este, Paraguay
+                Barrio Che La Reina km 4½, Ciudad del Este, Paraguay
               </p>
               <p className="flex items-start gap-2 text-sm text-muted-foreground">
                 <Clock className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />

@@ -28,7 +28,7 @@ export function FullMenu() {
   if (error) {
     return (
       <section id="menu" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-        <p className="text-destructive">No se pudo cargar el menú: {error}</p>
+        <p className="text-destructive">No se pudo cargar el menú: {String(error)}</p>
       </section>
     )
   }

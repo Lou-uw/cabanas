@@ -2,14 +2,15 @@
 
 import { useEffect, useState } from 'react'
 import { Flame, ShoppingBag } from 'lucide-react'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { useCart } from '@/lib/cart-context'
 
 const NAV_LINKS = [
-  { href: '#destacados', label: 'Destacados' },
-  { href: 'menu', label: 'Menú' },
-  { href: '#combo', label: 'Combo' },
-  { href: '#nosotros', label: 'Nosotros' },
+  { href: '/destacados', label: 'Destacados' },
+  { href: '/menu', label: 'Menú' },
+  { href: '/promos', label: 'Promos' },
+  { href: '/nosotros', label: 'Nosotros' },
 ]
 
 export function Header() {
@@ -32,24 +33,24 @@ export function Header() {
       }`}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <a href="#top" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
             <Flame className="size-5" aria-hidden />
           </span>
           <span className="font-serif text-lg font-bold leading-none tracking-tight">
             D&apos;Cabañas
           </span>
-        </a>
+        </Link>
 
         <nav className="hidden items-center gap-8 md:flex" aria-label="Navegación principal">
           {NAV_LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
         </nav>
 

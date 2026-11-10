@@ -1,23 +1,20 @@
+'use client'
+
+import { PageHeader } from '@/components/page-header'
 import { FullMenu } from '@/components/full-menu'
-import { Header } from '@/components/header'
 import { ProductModal } from '@/components/product-modal'
 import { CartSheet } from '@/components/cart-sheet'
-import { CartProvider } from '@/lib/cart-context'
-import { ProductUIProvider } from '@/lib/product-ui-context'
 
-export default function Menu() {
+export default function MenuPage() {
   return (
-    <CartProvider>
-      <ProductUIProvider>
-        <div className="min-h-screen bg-background">
-          <Header />
-          <main className="pt-16">
-            <FullMenu />
-          </main>
-          <ProductModal />
-          <CartSheet />
-        </div>
-      </ProductUIProvider>
-    </CartProvider>
+    <div className="min-h-screen bg-background">
+      <PageHeader
+        title="Menú completo"
+        subtitle="Todo para elegir. Clásicas, especiales, papas, bebidas y todo lo que hace falta para completar tu pedido."
+      />
+      <FullMenu />
+      <ProductModal />
+      <CartSheet />
+    </div>
   )
 }

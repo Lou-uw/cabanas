@@ -38,7 +38,7 @@ export function ComboSection() {
   if (error) {
     return (
       <section id="combo" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-20">
-        <p className="text-destructive">No se pudo cargar el combo: {error}</p>
+        <p className="text-destructive">No se pudo cargar el combo: {String(error)}</p>
       </section>
     )
   }

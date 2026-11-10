@@ -6,9 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { formatGs, type Product } from '@/lib/menu'
 import { useProductUI } from '@/lib/product-ui-context'
-import { Producto } from '@/types/producto'
 
-function startingPrice(product: Producto): { label: string; value: number } {
+function startingPrice(product: Product): { label: string; value: number } {
   if (product.sizes && product.sizes.length > 0) {
     const min = Math.min(...product.sizes.map((s) => s.price))
     return { label: 'Desde', value: min }
@@ -16,16 +15,19 @@ function startingPrice(product: Producto): { label: string; value: number } {
   return { label: '', value: product.price ?? 0 }
 }
 
-export function ProductCard({ product }: { product: Producto }) {
+export function ProductCard({ product }: { product: Product }) {
   const { openProduct } = useProductUI()
   const price = startingPrice(product)
 
+  const agotado = product.activo === false
+
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/40">
+    <article className={`group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary/40 ${agotado ? 'opacity-60' : ''}`}>
       <button
         type="button"
         onClick={() => openProduct(product)}
-        className="relative aspect-[4/3] overflow-hidden"
+        disabled={agotado}
+        className="relative w-full aspect-[4/3] overflow-hidden disabled:cursor-not-allowed"
         aria-label={`Ver ${product.name}`}
       >
         <Image
@@ -35,7 +37,12 @@ export function ProductCard({ product }: { product: Producto }) {
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        {product.featured && (
+        {agotado && (
+          <Badge className="absolute left-3 top-3 rounded-full bg-destructive text-destructive-foreground hover:bg-destructive">
+            Agotado
+          </Badge>
+        )}
+        {!agotado && product.featured && (
           <Badge className="absolute left-3 top-3 rounded-full bg-primary text-primary-foreground hover:bg-primary">
             Más pedida
           </Badge>
@@ -60,10 +67,11 @@ export function ProductCard({ product }: { product: Producto }) {
           <Button
             size="sm"
             onClick={() => openProduct(product)}
+            disabled={agotado}
             className="gap-1.5 rounded-full font-semibold"
           >
             <Plus className="size-4" aria-hidden />
-            Agregar
+            {agotado ? 'Agotado' : 'Agregar'}
           </Button>
         </div>
       </div>

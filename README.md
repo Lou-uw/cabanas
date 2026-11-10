@@ -1,33 +1,81 @@
-# cabanas
+# D'Cabañas — Pizzería (Frontend + Backend)
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+Sistema de pedidos para una pizzería: catálogo de productos, pizzas con tamaños y borde relleno, combos, carrito y checkout que guarda el pedido en MySQL y abre WhatsApp con el detalle.
 
-## Built with v0
+## Estructura
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+- `cabanas/` — Frontend en Next.js 16 (React 19, TypeScript).
+- `backend/testing/` — Backend en Spring Boot 4 (Kotlin), JPA/Hibernate, MariaDB/MySQL.
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_AtkE7HEd63KfylDjGQfnJUKvntsF)
+## Requisitos
 
-## Getting Started
+- Node.js 20+ y bun.
+- JDK 21.
+- MariaDB/MySQL en `127.0.0.1:3306`, base `dcabanas`, usuario `root` / `dc123456`.
+- Maven (incluido como `mvnw`).
 
-First, run the development server:
+## Base de datos
+
+1. Crear la base: `CREATE DATABASE dcabanas CHARACTER SET utf8mb4;`
+2. Ejecutar los scripts de `backend/testing/src/main/resources/db/migration/` en orden (V1, V2, V3). Flyway está deshabilitado, así que se corren a mano.
+3. Cargar datos iniciales (categorías, tamaños, productos, combos) según las guías del curso.
+4. Columna `es_regalo` en `detalle_pedido` (agregada en el código, ejecutar a mano si es necesario):
+   ```sql
+   ALTER TABLE detalle_pedido ADD COLUMN es_regalo TINYINT(1) DEFAULT 0;
+   ```
+
+## Correr el backend
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+cd backend/testing
+./mvnw spring-boot:run   # Windows: mvnw.cmd spring-boot:run
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Queda escuchando en `http://127.0.0.1:8080` (perfil `local`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Correr el frontend
 
-## Learn More
+```bash
+cd cabanas
+bun install
+bun run dev
+```
 
-To learn more, take a look at the following resources:
+Abrir `http://localhost:3000`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+La URL del API se configura en `cabanas/config/index.ts` (`url_api`), por defecto `http://127.0.0.1:8080/api/`.
+
+## Número de WhatsApp
+
+Se cambia en una sola línea en `cabanas/config/index.ts`:
+
+```ts
+export const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '595973493374'
+```
+
+## Comandos útiles
+
+- `bun run dev` — levanta el frontend en `http://localhost:3000`.
+- `bun exec tsc --noEmit` — chequeo de tipos del frontend (o `pnpm exec tsc --noEmit` si usás pnpm).
+- `mvnw -q -DskipTests compile` — compila el backend.
+
+## Promociones diarias
+
+Hay promociones que cambian según el día de la semana (hora del local, zona `America/Asuncion`):
+
+| Día | Promo | Regalo |
+|-----|-------|--------|
+| Miércoles | Pizza Grande o Familiar | Papa frita mediana |
+| Viernes | Pizza Familiar | Coca-Cola 1 L |
+| Sábado/Domingo | 2 pizzas Familiares | Coca-Cola 1 L + Papa frita mediana |
+| Lunes, Martes, Jueves | Sin promo | — |
+
+El backend valida el día y la condición, y pone el regalo a precio 0 en `detalle_pedido` (columna `es_regalo = 1`). El front muestra el banner del día y agrega/quita el regalo del carrito automáticamente.
+
+**Endpoint de prueba (solo desarrollo):**
+- `POST /api/promos/test/forzar-fecha?fecha=YYYY-MM-DD` — forza el día para probar.
+- `DELETE /api/promos/test/forzar-fecha` — vuelve a la fecha real.
+
+**Imágenes:** se esperan en `cabanas/public/images/promos/` (`promo-miercoles.png`, `promo-viernes.png`, `promo-sabado-domingo.png`). Si faltan, se usa `/images/combo.png` como reemplazo.
+
+**Configuración:** la zona horaria y la fecha forzada están en `backend/testing/.../config/PromoConfig.kt`.

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Image from 'next/image'
 import { Minus, Plus, Trash2, ShoppingBag, MessageCircle, Check } from 'lucide-react'
 import {
@@ -42,6 +42,7 @@ export function CartSheet() {
   const [notes, setNotes] = useState('')
 
   const [submitting, setSubmitting] = useState(false)
+  const submittingRef = useRef(false)
   const [orderError, setOrderError] = useState<string | null>(null)
   const [completedOrder, setCompletedOrder] = useState<CompletedOrder | null>(null)
 
@@ -51,7 +52,6 @@ export function CartSheet() {
     !submitting &&
     !completedOrder &&
     name.trim().length > 1 &&
-    phone.trim().length >= 6 &&
     address.trim().length > 3
 
   const buildMessage = (orderId?: number, totalPedido?: number) => {
@@ -60,7 +60,9 @@ export function CartSheet() {
     if (orderId) lines.push(`*Pedido #${orderId}*`)
     lines.push('')
     lines.push(`*Cliente:* ${name.trim()}`)
-    lines.push(`*Teléfono:* ${phone.trim()}`)
+    if (phone.trim()) {
+      lines.push(`*Teléfono:* ${phone.trim()}`)
+    }
     lines.push(`*Dirección:* ${address.trim()}`)
     lines.push(
       `*Pago:* ${
@@ -76,8 +78,9 @@ export function CartSheet() {
     items.forEach((it) => {
       const extras = [it.sizeLabel, it.bordeLabel].filter(Boolean).join(' · ')
       const label = extras ? `${it.name} (${extras})` : it.name
+      const regaloPrefix = it.esRegalo ? 'Regalo: ' : ''
       lines.push(
-        `• ${it.quantity} x ${label} — ${formatGs(it.unitPrice * it.quantity)}`,
+        `• ${it.quantity} x ${regaloPrefix}${label} — ${formatGs(it.unitPrice * it.quantity)}`,
       )
     })
     lines.push('')
@@ -90,7 +93,9 @@ export function CartSheet() {
   }
 
   const handleCheckout = async () => {
-    if (!canSubmit) return
+    if (canSubmit === false) return
+    if (submittingRef.current) return
+    submittingRef.current = true
     setOrderError(null)
 
     // Abrimos la ventana en el mismo clic para que el navegador no la bloquee.
@@ -105,7 +110,7 @@ export function CartSheet() {
     try {
       const pedido = await crearPedido({
         clienteNombre: name.trim(),
-        clienteTelefono: phone.trim(),
+        clienteTelefono: phone.trim() || null,
         formaPago: payment,
         direccionEntrega: address.trim(),
         notas: notes.trim() || null,
@@ -114,6 +119,7 @@ export function CartSheet() {
           comboId: it.comboId ?? null,
           tamanioId: it.tamanioId,
           conBorde: it.conBorde ?? false,
+          esRegalo: it.esRegalo ?? false,
           cantidad: it.quantity,
         })),
       })
@@ -140,6 +146,7 @@ export function CartSheet() {
         error instanceof Error ? error.message : 'No se pudo guardar el pedido.',
       )
     } finally {
+      submittingRef.current = false
       setSubmitting(false)
     }
   }
@@ -253,7 +260,14 @@ export function CartSheet() {
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="truncate font-semibold leading-tight">{it.name}</p>
+                      <div className="flex items-center gap-1">
+                        <p className="truncate font-semibold leading-tight">{it.name}</p>
+                        {it.esRegalo && (
+                          <span className="px-2 py-0.5 rounded text-xs font-bold bg-primary text-primary-foreground">
+                            Regalo
+                          </span>
+                        )}
+                      </div>
                       <button
                         type="button"
                         onClick={() => removeItem(it.lineId)}

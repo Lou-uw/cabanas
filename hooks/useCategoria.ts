@@ -13,7 +13,7 @@ export function useCategoria() {
                 setCategorias(data)
             } catch(error) {
                 console.log(error)
-                setError(error as string)
+                setError(error instanceof Error ? error.message : String(error))
             } finally {
                 setLoading(false)
             }

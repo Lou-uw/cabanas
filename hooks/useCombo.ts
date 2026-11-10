@@ -13,7 +13,7 @@ export function useCombo() {
                 setCombos(data.filter((combo) => combo.activo))
             } catch(error) {
                 console.log(error)
-                setError(error as string)
+                setError(error instanceof Error ? error.message : String(error))
             } finally {
                 setLoading(false)
             }

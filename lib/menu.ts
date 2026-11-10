@@ -29,6 +29,8 @@ export type Product = {
   price?: number
   /** Solo las pizzas permiten borde relleno */
   allowBorde?: boolean
+  /** Si es false, el producto está agotado (visible pero bloqueado) */
+  activo?: boolean
 }
 
 // El precio del borde no está acá: sale de tamanios.precio_borde.

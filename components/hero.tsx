@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { MapPin, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -33,19 +34,18 @@ export function Hero() {
           Un refugio para los amantes de la buena pizza.</p>
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <Button
-            nativeButton={false}
-            render={<a href="#menu">Ver el menú</a>}
-            size="lg"
-            className="rounded-full px-8 text-base font-semibold"
-          />
-          <Button
-            nativeButton={false}
-            render={<a href="#combo">Promos</a>}
-            size="lg"
-            variant="outline"
-            className="rounded-full border-border bg-background/40 px-8 text-base font-semibold backdrop-blur"
-          />
+          <Link
+            href="#menu"
+            className="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/80 px-8 py-2.5 text-base font-semibold"
+          >
+            Ver el menú
+          </Link>
+          <Link
+            href="#promos"
+            className="inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/80 px-8 py-2.5 text-base font-semibold"
+          >
+            Promos
+          </Link>
         </div>
 
         <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">

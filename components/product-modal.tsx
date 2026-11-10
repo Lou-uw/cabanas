@@ -55,7 +55,10 @@ export function ProductModal() {
 
   if (!selected) return null
 
+  const agotado = selected?.activo === false
+
   const handleAdd = () => {
+    if (agotado) return
     addItem({
       productId: selected.id,
       name: selected.name,
@@ -199,10 +202,11 @@ export function ProductModal() {
           <Button
             onClick={handleAdd}
             size="lg"
+            disabled={agotado}
             className="mt-6 w-full gap-2 rounded-full text-base font-semibold"
           >
             <Check className="size-5" aria-hidden />
-            Agregar · {formatGs(unitPrice * quantity)}
+            {agotado ? 'Producto agotado' : `Agregar · ${formatGs(unitPrice * quantity)}`}
           </Button>
         </div>
       </DialogContent>
