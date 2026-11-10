@@ -3,22 +3,47 @@
 import Image from 'next/image'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { COMBO, formatGs } from '@/lib/menu'
+import { formatGs } from '@/lib/menu'
 import { useCart } from '@/lib/cart-context'
+import { useCombo } from '@/hooks/useCombo'
 
 export function ComboSection() {
   const { addItem, openCart } = useCart()
+  const { combos, loading, error } = useCombo()
+
+  const combo = combos[0]
 
   const addCombo = () => {
+    if (!combo) return
     addItem({
-      productId: COMBO.id,
-      name: COMBO.name,
-      image: COMBO.image,
-      unitPrice: COMBO.price,
+      lineId: `combo-${combo.id}`,
+      productId: String(combo.id),
+      name: combo.nombre,
+      image: combo.imagen || '/images/combo.png',
+      comboId: combo.id,
+      unitPrice: combo.precio,
       quantity: 1,
     })
     openCart()
   }
+
+  if (loading) {
+    return (
+      <section id="combo" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-20">
+        <p className="text-muted-foreground">Cargando combo...</p>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section id="combo" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-20">
+        <p className="text-destructive">No se pudo cargar el combo: {error}</p>
+      </section>
+    )
+  }
+
+  if (!combo) return null
 
   return (
     <section id="combo" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-20">
@@ -29,13 +54,13 @@ export function ComboSection() {
               Combo del día
             </span>
             <h2 className="mt-4 font-serif text-3xl font-bold sm:text-4xl">
-              {COMBO.name}
+              {combo.nombre}
             </h2>
-            <p className="mt-3 max-w-md text-muted-foreground">{COMBO.description}</p>
+            <p className="mt-3 max-w-md text-muted-foreground">{combo.descripcion}</p>
 
             <div className="mt-6 flex items-center gap-3">
               <span className="font-serif text-4xl font-black text-primary">
-                {formatGs(COMBO.price)}
+                {formatGs(combo.precio)}
               </span>
             </div>
 
@@ -51,8 +76,8 @@ export function ComboSection() {
 
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border">
             <Image
-              src={COMBO.image || '/placeholder.svg'}
-              alt="Combo de pizza familiar con gaseosa"
+              src={combo.imagen || '/images/combo.png'}
+              alt={combo.nombre}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"

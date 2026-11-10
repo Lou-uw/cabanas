@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { Minus, Plus, Trash2, ShoppingBag, MessageCircle } from 'lucide-react'
+import { Minus, Plus, Trash2, ShoppingBag, MessageCircle, Check } from 'lucide-react'
 import {
   Sheet,
   SheetContent,
@@ -18,12 +18,18 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Separator } from '@/components/ui/separator'
 import { formatGs } from '@/lib/menu'
 import { useCart } from '@/lib/cart-context'
+import { crearPedido } from '@/services/PedidoService'
+import { whatsappNumber } from '@/config'
 
-// Número de WhatsApp de la pizzería (formato internacional, sin +)
-const WHATSAPP_NUMBER = '595983123456'
-
-type OrderType = 'delivery' | 'retiro'
 type Payment = 'efectivo' | 'transferencia' | 'tarjeta'
+
+type CompletedOrder = {
+  id: number
+  total: number
+  whatsappUrl: string
+  /** true si pudimos cargar la ventana de WhatsApp que abrimos en el clic */
+  opened: boolean
+}
 
 export function CartSheet() {
   const { items, total, count, isOpen, closeCart, updateQuantity, removeItem, clear } =
@@ -31,27 +37,31 @@ export function CartSheet() {
 
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
-  const [orderType, setOrderType] = useState<OrderType>('delivery')
   const [address, setAddress] = useState('')
   const [payment, setPayment] = useState<Payment>('efectivo')
   const [notes, setNotes] = useState('')
 
+  const [submitting, setSubmitting] = useState(false)
+  const [orderError, setOrderError] = useState<string | null>(null)
+  const [completedOrder, setCompletedOrder] = useState<CompletedOrder | null>(null)
+
+  // El negocio es solo delivery: la dirección es obligatoria.
   const canSubmit =
     items.length > 0 &&
+    !submitting &&
+    !completedOrder &&
     name.trim().length > 1 &&
     phone.trim().length >= 6 &&
-    (orderType === 'retiro' || address.trim().length > 3)
+    address.trim().length > 3
 
-  const buildMessage = () => {
+  const buildMessage = (orderId?: number, totalPedido?: number) => {
     const lines: string[] = []
-    lines.push('*Nuevo pedido - D\u2019Cabañas* 🍕')
+    lines.push('*Nuevo pedido - D\u2019Cabañas*')
+    if (orderId) lines.push(`*Pedido #${orderId}*`)
     lines.push('')
     lines.push(`*Cliente:* ${name.trim()}`)
     lines.push(`*Teléfono:* ${phone.trim()}`)
-    lines.push(`*Entrega:* ${orderType === 'delivery' ? 'Delivery' : 'Retiro en local'}`)
-    if (orderType === 'delivery') {
-      lines.push(`*Dirección:* ${address.trim()}`)
-    }
+    lines.push(`*Dirección:* ${address.trim()}`)
     lines.push(
       `*Pago:* ${
         payment === 'efectivo'
@@ -71,7 +81,7 @@ export function CartSheet() {
       )
     })
     lines.push('')
-    lines.push(`*Total: ${formatGs(total)}*`)
+    lines.push(`*Total: ${formatGs(totalPedido ?? total)}*`)
     if (notes.trim()) {
       lines.push('')
       lines.push(`*Notas:* ${notes.trim()}`)
@@ -79,28 +89,139 @@ export function CartSheet() {
     return lines.join('\n')
   }
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!canSubmit) return
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildMessage())}`
-    window.open(url, '_blank', 'noopener,noreferrer')
+    setOrderError(null)
+
+    // Abrimos la ventana en el mismo clic para que el navegador no la bloquee.
+    // No usamos "noopener" acá porque necesitamos la referencia para cargar el link.
+    const whatsappWindow = window.open('', '_blank')
+    if (whatsappWindow) {
+      whatsappWindow.opener = null
+    }
+
+    setSubmitting(true)
+
+    try {
+      const pedido = await crearPedido({
+        clienteNombre: name.trim(),
+        clienteTelefono: phone.trim(),
+        formaPago: payment,
+        direccionEntrega: address.trim(),
+        notas: notes.trim() || null,
+        detalles: items.map((it) => ({
+          productoId: it.comboId ? null : Number(it.productId),
+          comboId: it.comboId ?? null,
+          tamanioId: it.tamanioId,
+          conBorde: it.conBorde ?? false,
+          cantidad: it.quantity,
+        })),
+      })
+
+      const mensaje = buildMessage(pedido.id, Number(pedido.total))
+      const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(mensaje)}`
+
+      const opened = Boolean(whatsappWindow && !whatsappWindow.closed)
+      if (opened && whatsappWindow) {
+        whatsappWindow.location.href = url
+      }
+
+      setCompletedOrder({
+        id: pedido.id,
+        total: Number(pedido.total),
+        whatsappUrl: url,
+        opened,
+      })
+      clear()
+    } catch (error) {
+      // Si no se pudo guardar, cerramos la ventana en blanco y no enviamos nada.
+      whatsappWindow?.close()
+      setOrderError(
+        error instanceof Error ? error.message : 'No se pudo guardar el pedido.',
+      )
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleOpenChange = (open: boolean) => {
+    if (open) return
+    closeCart()
+    if (completedOrder) {
+      clear()
+      setCompletedOrder(null)
+      setOrderError(null)
+    }
+  }
+
+  const closeCompletedOrder = () => {
+    setCompletedOrder(null)
+    setOrderError(null)
+    closeCart()
   }
 
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
+    <Sheet open={isOpen} onOpenChange={handleOpenChange}>
       <SheetContent className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
         <SheetHeader className="border-b border-border p-5">
           <SheetTitle className="flex items-center gap-2 font-serif text-xl">
-            <ShoppingBag className="size-5 text-primary" aria-hidden />
-            Tu pedido
+            {completedOrder ? (
+              <Check className="size-5 text-primary" aria-hidden />
+            ) : (
+              <ShoppingBag className="size-5 text-primary" aria-hidden />
+            )}
+            {completedOrder ? 'Pedido confirmado' : 'Tu pedido'}
           </SheetTitle>
           <SheetDescription>
-            {count > 0
-              ? `${count} ${count === 1 ? 'artículo' : 'artículos'} en el carrito`
-              : 'Todavía no agregaste nada.'}
+            {completedOrder
+              ? 'Tu pedido quedó guardado correctamente.'
+              : count > 0
+                ? `${count} ${count === 1 ? 'artículo' : 'artículos'} en el carrito`
+                : 'Todavía no agregaste nada.'}
           </SheetDescription>
         </SheetHeader>
 
-        {items.length === 0 ? (
+        {completedOrder ? (
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
+            <div className="flex size-16 items-center justify-center rounded-full bg-primary/15 text-primary">
+              <Check className="size-8" aria-hidden />
+            </div>
+            <p className="font-serif text-2xl font-bold">
+              Pedido #{completedOrder.id}
+            </p>
+            <p className="text-muted-foreground">
+              Total: {formatGs(completedOrder.total)}
+            </p>
+            <p className="max-w-xs text-sm text-muted-foreground">
+              {completedOrder.opened
+                ? 'Abrimos WhatsApp con el detalle de tu pedido. Si no se abrió, usá el botón.'
+                : 'No pudimos abrir WhatsApp automáticamente. Usá el botón para enviarlo.'}
+            </p>
+
+            <Button
+              onClick={() =>
+                window.open(
+                  completedOrder.whatsappUrl,
+                  '_blank',
+                  'noopener,noreferrer',
+                )
+              }
+              size="lg"
+              className="mt-2 w-full gap-2 rounded-full text-base font-semibold"
+            >
+              <MessageCircle className="size-5" aria-hidden />
+              Abrir WhatsApp
+            </Button>
+            <Button
+              onClick={closeCompletedOrder}
+              variant="outline"
+              size="lg"
+              className="w-full rounded-full"
+            >
+              Cerrar
+            </Button>
+          </div>
+        ) : items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-3 p-8 text-center">
             <div className="flex size-16 items-center justify-center rounded-full bg-muted">
               <ShoppingBag className="size-7 text-muted-foreground" aria-hidden />
@@ -208,40 +329,14 @@ export function CartSheet() {
                 </div>
 
                 <div className="grid gap-1.5">
-                  <Label>Tipo de entrega</Label>
-                  <RadioGroup
-                    value={orderType}
-                    onValueChange={(v) => setOrderType(v as OrderType)}
-                    className="grid grid-cols-2 gap-2"
-                  >
-                    <Label
-                      htmlFor="type-delivery"
-                      className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-border bg-background/50 p-3 text-sm font-medium has-[:checked]:border-primary has-[:checked]:bg-primary/10"
-                    >
-                      <RadioGroupItem id="type-delivery" value="delivery" className="sr-only" />
-                      Delivery
-                    </Label>
-                    <Label
-                      htmlFor="type-retiro"
-                      className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-border bg-background/50 p-3 text-sm font-medium has-[:checked]:border-primary has-[:checked]:bg-primary/10"
-                    >
-                      <RadioGroupItem id="type-retiro" value="retiro" className="sr-only" />
-                      Retiro
-                    </Label>
-                  </RadioGroup>
+                  <Label htmlFor="cart-address">Dirección de entrega</Label>
+                  <Input
+                    id="cart-address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Calle, número y referencia"
+                  />
                 </div>
-
-                {orderType === 'delivery' && (
-                  <div className="grid gap-1.5">
-                    <Label htmlFor="cart-address">Dirección</Label>
-                    <Input
-                      id="cart-address"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      placeholder="Calle, número y referencia"
-                    />
-                  </div>
-                )}
 
                 <div className="grid gap-1.5">
                   <Label>Forma de pago</Label>
@@ -289,6 +384,13 @@ export function CartSheet() {
                   {formatGs(total)}
                 </span>
               </div>
+
+              {orderError && (
+                <p className="mb-3 rounded-lg bg-destructive/10 p-2 text-sm text-destructive">
+                  {orderError}
+                </p>
+              )}
+
               <Button
                 onClick={handleCheckout}
                 disabled={!canSubmit}
@@ -296,8 +398,11 @@ export function CartSheet() {
                 className="w-full gap-2 rounded-full text-base font-semibold"
               >
                 <MessageCircle className="size-5" aria-hidden />
-                Enviar pedido por WhatsApp
+                {submitting ? 'Guardando pedido...' : 'Enviar pedido por WhatsApp'}
               </Button>
+              <p className="mt-2 text-center text-xs text-muted-foreground">
+                Tu pedido se guarda y se envía por WhatsApp al local.
+              </p>
               <button
                 type="button"
                 onClick={clear}

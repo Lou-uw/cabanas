@@ -1,4 +1,5 @@
 import { Flame, MapPin, Clock, Phone, AtSign } from 'lucide-react'
+import { whatsappDisplay, whatsappNumber } from '@/config'
 
 export function AboutFooter() {
   return (
@@ -36,13 +37,13 @@ export function AboutFooter() {
             <div className="space-y-3">
               <h3 className="font-serif text-lg font-semibold">Contacto</h3>
               <a
-                href="https://wa.me/595983123456"
+                href={`https://wa.me/${whatsappNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
               >
                 <Phone className="size-4 shrink-0 text-primary" aria-hidden />
-                +595 983 123 456
+                {whatsappDisplay}
               </a>
               <a
                 href="#"

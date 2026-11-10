@@ -19,7 +19,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "D'Cabañas | Pizzería · Ciudad del Este",
   description:
-    'Pedí. Compartí. Disfrutá. Un refugio para los amantes de la buena pizza. Pizzas clásicas, especiales, dulces, papas fritas y bebidas con delivery en Ciudad del Este.',
+    'Pedí. Compartí. Disfrutá. Un refugio para los amantes de la buena pizza. Pizzas clásicas, especiales, papas fritas y bebidas con delivery en Ciudad del Este.',
   generator: 'v0.app',
 }
 

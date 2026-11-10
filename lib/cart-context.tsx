@@ -17,6 +17,11 @@ export type CartItem = {
   image: string
   sizeLabel?: string
   bordeLabel?: string
+  /** IDs reales para guardar el pedido en la base */
+  tamanioId?: number
+  conBorde?: boolean
+  /** Si viene, el ítem es un combo y se guarda con su precio en la base */
+  comboId?: number
   unitPrice: number
   quantity: number
 }

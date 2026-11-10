@@ -46,7 +46,10 @@ export function ProductModal() {
   const unitPrice = useMemo(() => {
     if (!selected) return 0
     const base = selected.sizes ? (selectedSize?.price ?? 0) : (selected.price ?? 0)
-    const bordeExtra = selected.allowBorde ? selectedBorde.price : 0
+    const bordeExtra =
+      selected.allowBorde && selectedBorde.id !== 'sin'
+        ? (selectedSize?.bordePrice ?? 0)
+        : 0
     return base + bordeExtra
   }, [selected, selectedSize, selectedBorde])
 
@@ -59,9 +62,11 @@ export function ProductModal() {
       image: selected.image,
       sizeLabel: selectedSize?.label,
       bordeLabel:
-        selected.allowBorde && selectedBorde.price > 0
+        selected.allowBorde && selectedBorde.id !== 'sin'
           ? selectedBorde.label
           : undefined,
+      tamanioId: selectedSize?.id,
+      conBorde: selected.allowBorde && selectedBorde.id !== 'sin',
       unitPrice,
       quantity,
     })
@@ -71,8 +76,8 @@ export function ProductModal() {
 
   return (
     <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && closeProduct()}>
-      <DialogContent className="max-h-[92vh] gap-0 overflow-y-auto p-0 sm:max-w-lg">
-        <div className="relative aspect-[16/10] w-full overflow-hidden">
+      <DialogContent className="flex max-h-[92vh] flex-col gap-0 overflow-y-auto p-0 sm:max-w-lg">
+        <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden">
           <Image
             src={selected.image || '/placeholder.svg'}
             alt={selected.name}
@@ -88,9 +93,11 @@ export function ProductModal() {
             <DialogTitle className="font-serif text-2xl font-bold">
               {selected.name}
             </DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              {selected.description}
-            </DialogDescription>
+            {selected.ingredients.length === 0 && (
+              <DialogDescription className="text-muted-foreground">
+                {selected.description}
+              </DialogDescription>
+            )}
           </DialogHeader>
 
           {selected.ingredients.length > 0 && (
@@ -148,7 +155,11 @@ export function ProductModal() {
                       <span className="font-medium">{borde.label}</span>
                     </span>
                     <span className="text-sm font-semibold text-muted-foreground">
-                      {borde.price > 0 ? `+${formatGs(borde.price)}` : '—'}
+                      {borde.id === 'sin'
+                        ? '—'
+                        : selectedSize
+                          ? `+${formatGs(selectedSize.bordePrice)}`
+                          : '—'}
                     </span>
                   </Label>
                 ))}
