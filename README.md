@@ -1,6 +1,6 @@
 # D'Cabañas — Pizzería (Frontend + Backend)
 
-Sistema de pedidos para una pizzería: catálogo de productos, pizzas con tamaños y borde relleno, combos, carrito y checkout que guarda el pedido en MySQL y abre WhatsApp con el detalle.
+Sistema de pedidos para una pizzería: catálogo de productos, pizzas con tamaños y borde relleno, //combos, carrito y checkout que guarda el pedido en MySQL y abre WhatsApp con el detalle.
 
 ## Estructura
 
@@ -18,7 +18,7 @@ Sistema de pedidos para una pizzería: catálogo de productos, pizzas con tamañ
 
 1. Crear la base: `CREATE DATABASE dcabanas CHARACTER SET utf8mb4;`
 2. Ejecutar los scripts de `backend/testing/src/main/resources/db/migration/` en orden (V1, V2, V3). Flyway está deshabilitado, así que se corren a mano.
-3. Cargar datos iniciales (categorías, tamaños, productos, combos) según las guías del curso.
+3. Cargar datos iniciales (categorías, tamaños, productos, //combos) según las guías del curso.
 4. Columna `es_regalo` en `detalle_pedido` (agregada en el código, ejecutar a mano si es necesario):
    ```sql
    ALTER TABLE detalle_pedido ADD COLUMN es_regalo TINYINT(1) DEFAULT 0;
@@ -76,6 +76,6 @@ El backend valida el día y la condición, y pone el regalo a precio 0 en `detal
 - `POST /api/promos/test/forzar-fecha?fecha=YYYY-MM-DD` — forza el día para probar.
 - `DELETE /api/promos/test/forzar-fecha` — vuelve a la fecha real.
 
-**Imágenes:** se esperan en `cabanas/public/images/promos/` (`promo-miercoles.png`, `promo-viernes.png`, `promo-sabado-domingo.png`). Si faltan, se usa `/images/combo.png` como reemplazo.
+**Imágenes:** se esperan en `cabanas/public/images/promos/` (`promo-miercoles.png`, `promo-viernes.png`, `promo-sabado-domingo.png`). Si faltan, se usa `/images///combo.png` como reemplazo.
 
 **Configuración:** la zona horaria y la fecha forzada están en `backend/testing/.../config/PromoConfig.kt`.

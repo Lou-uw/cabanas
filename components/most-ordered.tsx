@@ -31,9 +31,6 @@ export function MostOrdered() {
         <h2 className="font-serif text-3xl font-bold sm:text-4xl">
           Lo más pedido
         </h2>
-        <p className="max-w-xl text-muted-foreground">
-          Las pizzas que hacen que nuestros clientes vuelvan una y otra vez.
-        </p>
       </div>
 
       {loading && (

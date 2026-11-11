@@ -1,8 +1,6 @@
 export type PedidoDetalleRequest = {
-  // Cada ítem es un producto o un combo, nunca los dos.
-  productoId?: number | null
-  comboId?: number | null
-  tamanioId?: number
+  productoId: number
+  tamanioId: number
   conBorde?: boolean
   /** Si es true, el ítem es un regalo de promoción (precio 0) */
   esRegalo?: boolean
@@ -22,8 +20,8 @@ export type PedidoDetalleResponse = {
   id: number
   productoId: number | null
   producto: string
-  comboId: number | null
-  combo: string | null
+  //////comboId: number | null
+  ////combo: string | null
   tamanioId: number | null
   conBorde: boolean
   /** Si es true, el ítem es un regalo de promoción (precio 0) */

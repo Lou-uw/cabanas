@@ -14,9 +14,6 @@ export function PageHeader({ title, subtitle }: { title: string; subtitle?: stri
         </Link>
       </div>
       <div className="mb-8 flex flex-col gap-2">
-        <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-          D&apos;Cabañas
-        </span>
         <h1 className="font-serif text-4xl font-bold sm:text-5xl">{title}</h1>
         {subtitle && <p className="max-w-xl text-muted-foreground">{subtitle}</p>}
       </div>

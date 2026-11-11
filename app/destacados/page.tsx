@@ -8,10 +8,7 @@ import { CartSheet } from '@/components/cart-sheet'
 export default function Destacados() {
   return (
     <div className="min-h-screen bg-background">
-      <PageHeader
-        title="Lo más pedido"
-        subtitle="Las pizzas que hacen que nuestros clientes vuelvan una y otra vez."
-      />
+      <PageHeader title="Destacadas"subtitle="Las pizzas que hacen que nuestros clientes vuelvan una y otra vez."/>
       <MostOrdered />
       <ProductModal />
       <CartSheet />

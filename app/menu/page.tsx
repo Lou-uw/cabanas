@@ -10,7 +10,6 @@ export default function MenuPage() {
     <div className="min-h-screen bg-background">
       <PageHeader
         title="Menú completo"
-        subtitle="Todo para elegir. Clásicas, especiales, papas, bebidas y todo lo que hace falta para completar tu pedido."
       />
       <FullMenu />
       <ProductModal />

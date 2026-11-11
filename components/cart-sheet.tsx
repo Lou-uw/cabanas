@@ -115,8 +115,7 @@ export function CartSheet() {
         direccionEntrega: address.trim(),
         notas: notes.trim() || null,
         detalles: items.map((it) => ({
-          productoId: it.comboId ? null : Number(it.productId),
-          comboId: it.comboId ?? null,
+          productoId: Number(it.productId),
           tamanioId: it.tamanioId,
           conBorde: it.conBorde ?? false,
           esRegalo: it.esRegalo ?? false,

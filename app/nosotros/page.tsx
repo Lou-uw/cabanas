@@ -8,10 +8,14 @@ export default function Nosotros() {
   return (
     <div className="min-h-screen bg-background">
       <PageHeader
-        title="Nosotros"
-        subtitle="Ubicación, horario y contacto de D&apos;Cabañas."
+        title=" Sobre Nosotros"
+        subtitle="De donde nacieron nuestras pizzas"
       />
-      <AboutFooter />
+      <p>Nacimos como un refugio para los amantes de la buena pizza 
+        en Ciudad del Este. Masa fermentada con paciencia, ingredientes frescos y el fuego justo
+        para que cada porción se sienta como estar en la cabaña. Pedí, compartí y
+        disfrutá.
+</p>
       <CartSheet />
     </div>
   )

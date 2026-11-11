@@ -13,12 +13,7 @@ export function AboutFooter() {
               </span>
               <span className="font-serif text-xl font-bold">D&apos;Cabañas</span>
             </div>
-            <p className="mt-4 max-w-md text-pretty leading-relaxed text-muted-foreground">
-              Nacimos como un refugio para los amantes de la buena pizza en Ciudad del
-              Este. Masa fermentada con paciencia, ingredientes frescos y el fuego justo
-              para que cada porción se sienta como estar en la cabaña. Pedí, compartí y
-              disfrutá.
-            </p>
+            
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2">

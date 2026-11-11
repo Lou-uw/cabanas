@@ -147,8 +147,8 @@ export function PromoSection({ promoInicial }: PromoSectionProps) {
         addItem({
           productId: String(regalo.productoId),
           name: `🎁 Regalo: ${regaloNombre(regalo.productoId)}`,
-          image: '/images/combo.png',
-          comboId: undefined,
+          image: '/images///combo.png',
+          ////comboId: undefined,
           tamanioId: undefined,
           conBorde: false,
           esRegalo: true,
@@ -254,7 +254,7 @@ export function PromoSection({ promoInicial }: PromoSectionProps) {
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
                 onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-                  ;(e.target as HTMLImageElement).src = '/images/combo.png'
+                  ;(e.target as HTMLImageElement).src = '/images///combo.png'
                 }}
               />
             ) : (

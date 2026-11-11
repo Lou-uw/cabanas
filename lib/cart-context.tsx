@@ -20,8 +20,8 @@ export type CartItem = {
   /** IDs reales para guardar el pedido en la base */
   tamanioId?: number
   conBorde?: boolean
-  /** Si viene, el ítem es un combo y se guarda con su precio en la base */
-  comboId?: number
+  /** Si viene, el ítem es un //combo y se guarda con su precio en la base */
+ // ////comboId?: number
   /** Si es true, el ítem es un regalo de promoción (precio 0) */
   esRegalo?: boolean
   unitPrice: number
