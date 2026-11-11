@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button'
 
 export function PageHeader({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-      <div className="flex items-center gap-2 mb-2">
-        <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+   <div className="mx-auto max-w-6xl px-4 pt-6 pb-4 sm:px-6 sm:pt-8 sm:pb-6">
+     <div className="flex items-center gap-2 mb-4 mt-8 sm:mt-10">
+        <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors no-underline">
           <ArrowLeft className="size-4" />
           <span className="text-sm font-medium">Volver al inicio</span>
         </Link>

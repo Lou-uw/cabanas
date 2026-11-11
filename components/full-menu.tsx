@@ -44,7 +44,7 @@ export function FullMenu() {
   return (
     <section
       id="menu"
-      className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-20"
+    className="mx-auto max-w-6xl scroll-mt-20 px-4 pt-6 pb-16 sm:px-6 sm:pt-6 sm:pb-20"
     >
       <div className="mb-8 flex flex-col gap-2">
         <span className="text-xs font-semibold uppercase tracking-widest text-primary">

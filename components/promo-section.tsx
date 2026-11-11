@@ -193,7 +193,7 @@ export function PromoSection({ promoInicial }: PromoSectionProps) {
   const tienePromo = promo?.hayPromoActiva || false
 
   return (
-    <section id="promos" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 sm:px-6 sm:py-20">
+    <section id="promos" className="mx-auto max-w-6xl scroll-mt-20 px-4 pt-6 pb-16 sm:px-6 sm:pt-8 sm:pb-20">
       <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-card">
         <div className="grid items-center gap-8 p-6 sm:p-10 lg:grid-cols-2">
           <div>
