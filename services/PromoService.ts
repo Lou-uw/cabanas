@@ -8,7 +8,7 @@ export async function obtenerPromoHoy(): Promise<PromoInfo> {
     throw new Error(`Error ${respuesta.status} al obtener la promo de hoy`)
   }
 
-  return (await respuesta.json()) as PromoInfo
+  return (await respuesta.json()) as Info
 }
 
 export async function obtenerPromoDia(dia: string): Promise<PromoInfo> {

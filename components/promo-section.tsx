@@ -25,6 +25,12 @@ const REGALOS_POR_PROMO: Record<string, { productoId: number; nombre: string; ca
   ],
 }
 
+const IMAGENES_PROMO: Record<string, string> = {
+  miercoles: '/images/promo-miercoles.png',
+  viernes: '/images/promo-viernes.png',
+  fin_de_semana: '/images/promo-sabado-domingo.png',
+}
+
 const DIAS_SEMANA: Record<string, string> = {
   MONDAY: 'Lunes',
   TUESDAY: 'Martes',
@@ -241,20 +247,16 @@ export function PromoSection({ promoInicial }: PromoSectionProps) {
             )}
           </div>
 
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border">
-            {tienePromo && promo!.imagen ? (
+         <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border">
+            {tienePromo && promo!.tipoPromo ? (
               <Image
-                src={
-                  promo!.imagen.startsWith('/')
-                    ? promo!.imagen
-                    : `/images/${promo!.imagen}`
-                }
+                src={IMAGENES_PROMO[promo!.tipoPromo] || '/images/combo.png'}
                 alt={promo!.descripcion ?? 'Promo del día'}
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
                 onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-                  ;(e.target as HTMLImageElement).src = '/images///combo.png'
+                  ;(e.target as HTMLImageElement).src = '/images/combo.png'
                 }}
               />
             ) : (

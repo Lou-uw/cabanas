@@ -1,6 +1,6 @@
 # D'Cabañas — Pizzería (Frontend + Backend)
 
-Sistema de pedidos para una pizzería: catálogo de productos, pizzas con tamaños y borde relleno, //combos, carrito y checkout que guarda el pedido en MySQL y abre WhatsApp con el detalle.
+Sistema de pedidos para una pizzería: catálogo de productos, pizzas con tamaños y borde relleno, carrito y checkout que guarda el pedido en MySQL y abre WhatsApp con el detalle.
 
 ## Estructura
 
@@ -29,6 +29,7 @@ Sistema de pedidos para una pizzería: catálogo de productos, pizzas con tamañ
 ```bash
 cd backend/testing
 ./mvnw spring-boot:run   # Windows: mvnw.cmd spring-boot:run
+mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=lab"
 ```
 
 Queda escuchando en `http://127.0.0.1:8080` (perfil `local`).
