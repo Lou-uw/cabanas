@@ -57,7 +57,7 @@ export const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '595973
 ## Comandos útiles
 
 - `bun run dev` — levanta el frontend en `http://localhost:3000`.
-- `bun exec tsc --noEmit` — chequeo de tipos del frontend (o `pnpm exec tsc --noEmit` si usás pnpm).
+- `bun exec tsc --noEmit` — chequeo de tipos del frontend.
 - `mvnw -q -DskipTests compile` — compila el backend.
 
 ## Promociones diarias
