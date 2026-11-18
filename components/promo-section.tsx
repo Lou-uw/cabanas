@@ -6,6 +6,7 @@ import type { PromoInfo } from '@/types/promo'
 import { useCart } from '@/lib/cart-context'
 import { Button } from '@/components/ui/button'
 import { formatGs } from '@/lib/menu'
+import { url_api } from '@/config'
 
 // IDs de productos que pueden ser regalos (coinciden con el backend)
 const PRODUCTO_PAPA_MEDIANA = 23
@@ -84,7 +85,7 @@ export function PromoSection({ promoInicial }: PromoSectionProps) {
 
     let cancelled = false
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL ?? 'http://127.0.0.1:8080/api/'}promos/hoy`)
+    fetch(`${url_api}promos/hoy`)
       .then((respuesta) => {
         if (!respuesta.ok) throw new Error(`Error ${respuesta.status}`)
         return respuesta.json()
