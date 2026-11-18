@@ -1,6 +1,6 @@
 export type PedidoDetalleRequest = {
   productoId: number
-  tamanioId: number
+  tamanioId?: number | null
   conBorde?: boolean
   /** Si es true, el ítem es un regalo de promoción (precio 0) */
   esRegalo?: boolean
